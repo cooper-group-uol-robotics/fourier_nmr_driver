@@ -598,7 +598,7 @@ class Fourier80:
         """
         if save_shims:
             self.top.executeCommand("haltshim", wait=True)
-            self.last_shim = time.time()
+            self.last_shim = time()
             sleep(60)
         else:
             self.top.executeCommand("stopshim", wait=True)
