@@ -12,6 +12,7 @@ from typing import Optional, Union
 from warnings import warn
 
 from bruker.api.topspin import Topspin
+from bruker.model.nmr_model import ApiException
 
 from fourier_nmr_driver.constants import PARAMS, SOLVENTS
 
@@ -253,6 +254,12 @@ class Fourier80:
         else:
             self.url = "localhost:3081"
             self.top = Topspin()
+
+        try:
+            self.top.getVersion()
+
+        except ApiException:
+            raise ConnectionError("Cannot connect to TopSpin.")
 
         self.display = self.top.getDisplay()
         self.display.closeAllWindows()
