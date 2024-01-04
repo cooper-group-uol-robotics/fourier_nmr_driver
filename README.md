@@ -17,8 +17,8 @@ and then install the TopSpin API directly from the wheels provided by Bruker:
 
 ```
 cd <TopSpin-installation-folder>/python/examples
-python -m pip install .\ts_remote_api-2.0.0-py3-none-any.whl
-python -m pip install .\bruker_nmr_api-1.3.5-py3-none-any.whl
+python -m pip install ts_remote_api-2.0.0-py3-none-any.whl
+python -m pip install bruker_nmr_api-1.3.5-py3-none-any.whl
 python -m pip install -r requirements.txt
 ```
 
@@ -54,3 +54,11 @@ FOURIER = Fourier80()
 topspin_api = FOURIER.top
 topspin_api.executeCommand("efp;apk")
 ```
+
+## Example
+
+### Batch acquisition
+
+An example script for acquiring spectra can be found in `examples/batch_acquisition`.
+It uses a description of a batch of sample in a TOML or JSON file.
+The supplied examples should result in equivalent set of experiments.

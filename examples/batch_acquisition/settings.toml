@@ -1,0 +1,21 @@
+# Summary of the NMR setup for the acquisition.
+# Wait time is needed to ensure temperature equilibration after insertion.
+# Available rack layouts are PAL (1...48) or KUKA (1...36).
+# The main script allows to reshim after reshim_time for shim_time seconds.
+
+[nmr]
+shim_sample = 1
+wait_time   = 120
+rack_layout = "PAL"
+shim_time   = 1200
+reshim_time = 10800
+
+[defaults]
+samples_file = "samples.json"
+parameters   = "PROTON_f"
+solvent      = "CDCL3"
+num_scans    = 8
+sample_info  = "NMR Sample"
+pp_threshold = 0.005
+field_presat = 10
+l30          = 2

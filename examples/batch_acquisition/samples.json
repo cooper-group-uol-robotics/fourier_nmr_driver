@@ -1,0 +1,44 @@
+{
+    "1": {
+        "sample_info": "Sample 1",
+        "solvent": "CD3Cl",
+        "nmr_experiments": [
+            "MULTISUPPDC_f"
+        ]
+    },
+    "2": {
+        "sample_info": "Sample 2",
+        "solvent": "CH3CN",
+        "nmr_experiments": [
+            "PROTON_f",
+            {
+                "parameters": "MULTISUPPDC_f",
+                "num_scans": 64
+            }
+        ]
+    },
+    "3": {
+        "sample_info": "Sample 3",
+        "solvent": "CH3CN",
+        "nmr_experiments": [
+            {
+                "parameters": "PROTON_f"
+            },
+            {
+                "parameters": "MULTISUPPDC_f",
+                "num_scans": 64,
+                "pp_threshold": 0.008,
+                "field_presat": 20
+            }
+        ]
+    },
+    "4": {
+        "nmr_experiments": [
+            {
+                "parameters": "K_WETDC",
+                "num_scans": 64,
+                "l30": 2
+            }
+        ]
+    }
+}
