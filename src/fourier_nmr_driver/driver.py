@@ -7,7 +7,7 @@ Requires the official TopSpin API (TopSpin >= 4.3).
 from os import PathLike
 from pathlib import Path
 from shutil import copyfile, rmtree
-from time import sleep
+from time import sleep, time
 from typing import Optional, Union
 from warnings import warn
 
@@ -598,6 +598,7 @@ class Fourier80:
         """
         if save_shims:
             self.top.executeCommand("haltshim", wait=True)
+            self.last_shim = time.time()
             sleep(60)
         else:
             self.top.executeCommand("stopshim", wait=True)
