@@ -1,4 +1,4 @@
-# fourier_driver
+# Driver for Bruker Fourier80 NMR in A.I.C. Group
 
 ## Requirements and installation
 
