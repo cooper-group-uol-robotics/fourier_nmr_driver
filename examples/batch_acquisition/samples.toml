@@ -1,6 +1,6 @@
 [1]
 sample_info = "Sample 1"
-solvent = "CD3Cl"
+solvent = "CDCl3"
 nmr_experiments = [
     "MULTISUPPDC_f",
 ]

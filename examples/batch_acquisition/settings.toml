@@ -6,16 +6,16 @@
 [nmr]
 shim_sample = 1
 wait_time   = 120
-rack_layout = "PAL"
+rack_layout = "KUKA"
 shim_time   = 1200
 reshim_time = 10800
 
 [defaults]
-samples_file = "samples.json"
+samples_file = "samples.toml"
 parameters   = "PROTON_f"
 solvent      = "CDCL3"
 num_scans    = 8
 sample_info  = "NMR Sample"
-pp_threshold = 0.005
-field_presat = 10
+pp_threshold = 0.01
+field_presat = 20
 l30          = 2
