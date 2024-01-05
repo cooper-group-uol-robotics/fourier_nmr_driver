@@ -13,6 +13,7 @@ from typing import Iterable
 
 from fourier_nmr_driver import Fourier80
 
+logging.captureWarnings(True)
 logger = logging.getLogger()
 PREFIX = datetime.today().strftime("%Y-%m-%d")
 
@@ -303,7 +304,7 @@ def acquire_batch(
     for sample in samples:
         # Re-shim if needed
         if not dry:
-            if time.time() - FOURIER.last_shim > nmr["reshim_time"]:
+            if time() - FOURIER.last_shim > nmr["reshim_time"]:
                 logger.info("Too much time since last shim - reshimming.")
                 reshim(shim_sample=1, shim_time=nmr["shim_time"])
 
@@ -397,6 +398,7 @@ if __name__ == "__main__":
     args = parse_args()
     nmr, defaults = parse_settings(args.settings)
 
+    Path(args.logfile).parent.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
         filename=args.logfile,
