@@ -37,6 +37,9 @@ classifiers = [
         "flake8",
     ]
 
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib",
