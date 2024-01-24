@@ -3,13 +3,14 @@ import logging
 import tomllib
 from datetime import datetime
 from pathlib import Path
+
+from fourier_nmr_driver.acquisition import SampleBatch, acquire_batch
 from fourier_nmr_driver.constants.constants import (
     NMRDefaults,
     NMRSetup,
     RackLayouts,
 )
 from fourier_nmr_driver.driver.driver import Fourier80
-from fourier_nmr_driver.acquisition import SampleBatch, acquire_batch
 
 logging.captureWarnings(True)
 logger = logging.getLogger(__name__)
@@ -81,6 +82,11 @@ if args.samples is not None:
 else:
     samples_path = (Path.cwd() / NMR_DEFAULTS.samples_file).resolve()
 
+logger.info(f"Shim sample in reference rack position {NMR_SETUP.shim_sample}.")
+logger.info(f"Shimming every {NMR_SETUP.reshim_time / 3600:.2f} hours.")
+logger.info(f"Shimming time will be {NMR_SETUP.shim_time / 60:.2f} minutes.")
+
+
 logger.info(f"Acquiring spectra specified in {samples_path}.")
 
 if args.data is None:
@@ -104,12 +110,24 @@ def main():
     """Execute the acquisition code."""
     logger.info(f"Code running in {Path.cwd()}.")
 
+    if not args.dry:
+        FOURIER.stop_shimming()
+        logger.info("Quickshim procedure completed.")
+
     acquire_batch(
         samples=SampleBatch.from_file(samples_path),
         name=samples_path.stem,
         data_path=data_path,
         dry=args.dry,
     )
+
+    if not args.dry:
+        FOURIER.change_sample(NMR_SETUP.shim_sample)
+        logger.info(
+            f"Shim sample inserted (position {NMR_SETUP.shim_sample})."
+        )
+        FOURIER.start_shimming()
+        logger.info("Started the quickshim procedure.")
 
 
 if __name__ == "__main__":
