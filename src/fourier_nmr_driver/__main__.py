@@ -5,7 +5,6 @@ from datetime import datetime
 from pathlib import Path
 
 from fourier_nmr_driver.acquisition import (
-    SampleBatch,
     acquire_batch,
 )
 from fourier_nmr_driver.constants.constants import (
@@ -22,7 +21,7 @@ PREFIX = datetime.today().strftime("%Y-%m-%d")
 
 parser = argparse.ArgumentParser(description="Run a batch of NMRs.")
 parser.add_argument(
-    "--samples",
+    "samples",
     default=None,
     help="Batch information file (TOML or JSON).",
 )
@@ -65,6 +64,7 @@ logging.basicConfig(
     datefmt="%d-%b-%y %H:%M:%S",
 )
 
+logger.info(f"Code running in {Path.cwd()}.")
 
 if args.settings is not None:
     settings_path = (Path.cwd() / args.settings).resolve()
@@ -111,14 +111,13 @@ logger.info(f"Fourier80 REST interface connected at {FOURIER.url}.")
 
 def main():
     """Execute the acquisition code."""
-    logger.info(f"Code running in {Path.cwd()}.")
 
     if not args.dry:
         FOURIER.stop_shimming()
         logger.info("Quickshim procedure completed.")
 
     acquire_batch(
-        samples=SampleBatch.from_file(samples_path),
+        samples_path=samples_path,
         name=samples_path.stem,
         data_path=data_path,
         dry=args.dry,
