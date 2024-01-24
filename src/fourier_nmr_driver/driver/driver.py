@@ -14,7 +14,7 @@ from warnings import warn
 from bruker.api.topspin import Topspin
 from bruker.model.nmr_model import ApiException
 
-from fourier_nmr_driver.constants import PARAMS, SOLVENTS
+from fourier_nmr_driver.constants.constants import PARAMS, SOLVENTS
 
 
 class NMRExperiment:

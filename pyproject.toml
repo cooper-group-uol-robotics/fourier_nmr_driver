@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fourier_nmr_driver"
 description = "Driver for Bruker Fourier80 with PAL instrument control."
-version = "0.2.0"
+version = "0.3.0"
 requires-python = ">=3.11"
 authors = [
     { name = "Filip T. Szczypiński", email = "fiszczyp@gmail.com" },
@@ -37,8 +37,11 @@ classifiers = [
         "flake8",
     ]
 
+    [project.scripts]
+    nmr = "fourier_nmr_driver.__main__:main"
+
 [tool.setuptools.package-data]
-"*" = ["py.typed"]
+"*" = ["py.typed", "*.toml"]
 
 [tool.pytest.ini_options]
 addopts = [
@@ -55,3 +58,10 @@ ignore-init-module = true
 ignore-setters = true
 ignore-property-decorators = true
 ignore-magic = true
+
+[[tool.mypy.overrides]]
+module = [
+    'bruker.api.topspin',
+    'bruker.model.nmr_model',
+]
+ignore_missing_imports = true
