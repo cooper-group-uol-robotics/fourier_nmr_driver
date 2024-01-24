@@ -1,4 +1,5 @@
-"""Driver for a Bruker Fourier 80 benchtop NMR.
+"""
+Driver for a Bruker Fourier 80 benchtop NMR.
 
 Requires the official TopSpin API (TopSpin >= 4.3).
 
@@ -6,15 +7,27 @@ Requires the official TopSpin API (TopSpin >= 4.3).
 
 from os import PathLike
 from pathlib import Path
-from shutil import copyfile, rmtree
-from time import sleep, time
-from typing import Optional, Union
+from shutil import (
+    copyfile,
+    rmtree,
+)
+from time import (
+    sleep,
+    time,
+)
+from typing import (
+    Optional,
+    Union,
+)
 from warnings import warn
 
 from bruker.api.topspin import Topspin
 from bruker.model.nmr_model import ApiException
 
-from fourier_nmr_driver.constants.constants import PARAMS, SOLVENTS
+from fourier_nmr_driver.constants.constants import (
+    PARAMS,
+    SOLVENTS,
+)
 
 
 class NMRExperiment:
@@ -64,7 +77,8 @@ class NMRExperiment:
         self,
         status: bool = False,
     ) -> float:
-        """Get spectral width (in ppm).
+        """
+        Get spectral width (in ppm).
 
         Allows to extract the "status" spectral width too.
 
@@ -87,7 +101,8 @@ class NMRExperiment:
         self,
         status: bool = False,
     ) -> int:
-        """Get number of scans.
+        """
+        Get number of scans.
 
         Allows to extract the "status" number of scans too.
 
@@ -110,7 +125,8 @@ class NMRExperiment:
         self,
         status: bool = False,
     ) -> float:
-        """Get offset for the main nucleus (ppm).
+        """
+        Get offset for the main nucleus (ppm).
 
         Allows to extract the "status" offset too.
 
@@ -142,7 +158,8 @@ class NMRExperiment:
         self,
         status: bool = False,
     ) -> str:
-        """Get the experiment parameters set.
+        """
+        Get the experiment parameters set.
 
         Allows to extract the "status" parameters set too.
 
@@ -174,7 +191,8 @@ class NMRExperiment:
         self,
         status: bool = False,
     ) -> str:
-        """Get sample solvent.
+        """
+        Get sample solvent.
 
         Allows to extract the "status" solvent too.
 
@@ -200,7 +218,8 @@ class NMRExperiment:
         self.nmr_data.launch(f"solvent {value}")
 
     def process(self):
-        """Process the NMR spectrum in a very basic way.
+        """
+        Process the NMR spectrum in a very basic way.
 
         Simple forward Fourier transform, automatic phase correction and
         automatic baseline correction, using TopSpin ML algorithms.
@@ -213,7 +232,8 @@ class NMRExperiment:
 
 
 class Fourier80:
-    """Bruker Fourier80 NMR.
+    """
+    Bruker Fourier80 NMR.
 
     Based on the the original operation manual.
 
@@ -236,7 +256,8 @@ class Fourier80:
         address: Optional[str] = None,
         port: Optional[Union[str, int]] = None,
     ):
-        """Initialise the spectrometer.
+        """
+        Initialise the spectrometer.
 
         Parameters
         ----------
@@ -283,7 +304,8 @@ class Fourier80:
         getprosol: bool = True,
         overwrite: bool = False,
     ) -> NMRExperiment:
-        """Create new dataset for an experiment.
+        """
+        Create new dataset for an experiment.
 
         Parameters
         ----------
@@ -376,7 +398,8 @@ class Fourier80:
         getprosol: bool = False,
         overwrite: bool = False,
     ) -> NMRExperiment:
-        """Copy parameters of an existing experiment.
+        """
+        Copy parameters of an existing experiment.
 
         This method copies the parameters and then applies any changes
         requested upon calling (e.g., a new solvent). If data already exists,
@@ -467,7 +490,8 @@ class Fourier80:
         self,
         path: PathLike,
     ) -> NMRExperiment:
-        """Open an existing NMR experiment.
+        """
+        Open an existing NMR experiment.
 
         Parameters
         ----------
@@ -482,7 +506,8 @@ class Fourier80:
         self,
         position: int,
     ) -> None:
-        """Change sample in the probe.
+        """
+        Change sample in the probe.
 
         Parameters
         ----------
@@ -501,7 +526,8 @@ class Fourier80:
         nmr_experiment: NMRExperiment,
         overwrite: bool = True,
     ) -> None:
-        """Start NMR data acquisition.
+        """
+        Start NMR data acquisition.
 
         Parameters
         ----------
@@ -531,7 +557,8 @@ class Fourier80:
         self,
         nmr_experiment: NMRExperiment,
     ) -> None:
-        """Start locking to the internal sample.
+        """
+        Start locking to the internal sample.
 
         This is not strictly necessary for Fourier80 as the instrument
         has its internal lock sample and hence is always locked. In practice,
@@ -551,7 +578,8 @@ class Fourier80:
         self,
         quick=True,
     ) -> None:
-        """Start the shimming procedure.
+        """
+        Start the shimming procedure.
 
         Fourier80 spectrometer uses a shim sample (by default in position 1)
         and has two built-in shimming algorithms: quickshim and fullshim.
@@ -588,7 +616,8 @@ class Fourier80:
         self,
         save_shims=True,
     ) -> None:
-        """Stop the shimming procedure.
+        """
+        Stop the shimming procedure.
 
         Parameters
         ----------
@@ -618,7 +647,8 @@ class Fourier80:
             return False
 
     def halt(self):
-        """Halt executing current program/action immediately.
+        """
+        Halt executing current program/action immediately.
 
         This method stops execution of whatever command in TopSpin and
         saves the partial output.
@@ -628,7 +658,8 @@ class Fourier80:
         self._busy = False
 
     def stop(self):
-        """Stop executing current program/action immediately.
+        """
+        Stop executing current program/action immediately.
 
         This method stops execution of whatever command in TopSpin and
         does NOT save any partial autput.

@@ -1,4 +1,7 @@
-from fourier_nmr_driver.constants.constants import PARAMS, SOLVENTS
+from fourier_nmr_driver.constants.constants import (
+    PARAMS,
+    SOLVENTS,
+)
 from fourier_nmr_driver.driver.driver import (
     Fourier80,
     NMRExperiment,

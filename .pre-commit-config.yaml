@@ -1,11 +1,13 @@
 repos:
   - repo: https://github.com/econchick/interrogate
-    rev: 1.4.0
+    rev: 237be78f9c6135fc1a620d211cdfdc5d3885082b
     hooks:
       - id: interrogate
+        args: [--config=pyproject.toml]
+        pass_filenames: true
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+    rev: 5c52d752e64f210369b37654e7b26ce25e2266d6
     hooks:
       - id: flake8 # E***, W***, F***
         additional_dependencies:
@@ -19,20 +21,25 @@ repos:
           - pep8-naming # N8**
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 7de182933fd50e04a7c47cc8be75a6547754b19c
     hooks:
       - id: isort
-        args: ["--profile", "black", "--filter-files"]
+        # args: ["--profile", "black", "--filter-files"]
 
   - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
+    rev: 504107bdc4618f83a3378faac610e02cd62ef5f9
     hooks:
       - id: docformatter
         additional_dependencies: [tomli]
-        args: [--in-place, --blank]
+        args: [--in-place, --pre-summary-newline, --blank, --diff]
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 8fe602b1fa91dc6db682d1dba79a8a7341597271
     hooks:
       - id: black
         args: [--line-length=79]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy

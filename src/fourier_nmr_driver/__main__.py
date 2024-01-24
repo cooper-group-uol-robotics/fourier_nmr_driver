@@ -4,7 +4,10 @@ import tomllib
 from datetime import datetime
 from pathlib import Path
 
-from fourier_nmr_driver.acquisition import SampleBatch, acquire_batch
+from fourier_nmr_driver.acquisition import (
+    SampleBatch,
+    acquire_batch,
+)
 from fourier_nmr_driver.constants.constants import (
     NMRDefaults,
     NMRSetup,

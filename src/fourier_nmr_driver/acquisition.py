@@ -1,18 +1,27 @@
-"""Acquire a batch of NMRs described by a TOML or JSON file."""
+"""
+Acquire a batch of NMRs described by a TOML or JSON file.
+
+Example TOML and JSON can be found in the `examples` folder.
+
+"""
 
 import json
 import logging
+import time
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
-import time
-from typing import Iterable, Optional
+from typing import (
+    Iterable,
+    Optional,
+)
 
 logger = logging.getLogger(__name__)
 
 
 def reshim() -> None:
-    """Reshim the magnet.
+    """
+    Reshim the magnet.
 
     Parameters
     ----------
@@ -22,7 +31,10 @@ def reshim() -> None:
         Shimming time.
 
     """
-    from fourier_nmr_driver.__main__ import FOURIER, NMR_SETUP
+    from fourier_nmr_driver.__main__ import (
+        FOURIER,
+        NMR_SETUP,
+    )
 
     FOURIER.change_sample(NMR_SETUP.shim_sample)
     logger.info("Shim sample inserted.")
@@ -63,7 +75,8 @@ class SampleBatch:
     """A class containing a batch of samples."""
 
     def __init__(self, samples: Iterable[NMRSample]):
-        """Initialise SampleBatch.
+        """
+        Initialise SampleBatch.
 
         Parameters
         ----------
@@ -87,7 +100,8 @@ class SampleBatch:
         cls,
         samples_path: Path,
     ):
-        """Initialise SampleBatch from a TOML or JSON file.
+        """
+        Initialise SampleBatch from a TOML or JSON file.
 
         Parameters
         ----------
@@ -120,7 +134,8 @@ class SampleBatch:
         cls,
         samples_dict: dict,
     ):
-        """Generate SampleBatch from a dictionary.
+        """
+        Generate SampleBatch from a dictionary.
 
         Parameters
         ----------
@@ -202,7 +217,8 @@ def acquire_batch(
     data_path: Path,
     dry: bool = False,
 ) -> None:
-    """Acquire a batch of NMR spectra.
+    """
+    Acquire a batch of NMR spectra.
 
     Parameters
     ----------
@@ -216,7 +232,11 @@ def acquire_batch(
         If True, no actual spectrometer command will be sent.
 
     """
-    from fourier_nmr_driver.__main__ import FOURIER, NMR_SETUP, RACKS
+    from fourier_nmr_driver.__main__ import (
+        FOURIER,
+        NMR_SETUP,
+        RACKS,
+    )
 
     for sample in samples:
         # Re-shim if needed

@@ -38,7 +38,7 @@ classifiers = [
     ]
 
     [project.scripts]
-    nmr = "fourier_nmr_driver.__main__:main"
+    batch_nmr = "fourier_nmr_driver.__main__:main"
 
 [tool.setuptools.package-data]
 "*" = ["py.typed", "*.toml"]
@@ -65,3 +65,8 @@ module = [
     'bruker.model.nmr_model',
 ]
 ignore_missing_imports = true
+
+
+[tool.isort]
+profile         = "black"
+force_grid_wrap = 2

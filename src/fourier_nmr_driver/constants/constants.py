@@ -121,8 +121,9 @@ class RackLayouts:
     PALRACK2 = [*range(39, 63)]
 
     @classmethod
-    def get_racks(cls, layout: str) -> [int]:
-        """Get rack layout.
+    def get_racks(cls, layout: str) -> list[int]:
+        """
+        Get rack layout.
 
         Returns actual PAL gripper positions for each rack position.
 
