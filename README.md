@@ -40,6 +40,17 @@ To check whether the REST inferface is running correcly, go to:
 This setting window requires TopSpin administrator privileges. We recommend
 ticking the box "Start every time TopSpin is started".
 
+## Module execution
+
+The package can also be executes as a Python module via:
+```
+python -m fourier_nmr_driver [SAMPLEs.TOML]
+```
+or directly as a script:
+```
+nmr [SAMPLES.TOML]
+```
+
 ### Basic usage
 
 Most operations are performed via an instance of the `Fourier80` class and
