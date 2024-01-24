@@ -50,10 +50,8 @@ def reshim() -> None:
 class AcquisitionParameters:
     """A class containing acquisition parameters."""
 
-    from fourier_nmr_driver.__main__ import NMR_DEFAULTS
-
-    parameters: str = NMR_DEFAULTS.parameters
-    num_scans: int = NMR_DEFAULTS.num_scans
+    parameters: str
+    num_scans: int
     l30: Optional[int] = None
     pp_threshold: Optional[float] = None
     field_presat: Optional[float] = None
@@ -63,12 +61,10 @@ class AcquisitionParameters:
 class NMRSample:
     """A class containing sample information."""
 
-    from fourier_nmr_driver.__main__ import NMR_DEFAULTS
-
     position: int
     experiments: Iterable[AcquisitionParameters]
-    solvent: str = NMR_DEFAULTS.solvent
-    sample_info: str | dict = NMR_DEFAULTS.sample_info
+    solvent: str
+    sample_info: str | dict
 
 
 class SampleBatch:
@@ -150,20 +146,27 @@ class SampleBatch:
             experiments = []
             for exp in info["nmr_experiments"]:
                 if type(exp) is str:
-                    experiment = AcquisitionParameters(parameters=exp)
+                    experiment = AcquisitionParameters(
+                        parameters=exp,
+                        num_scans=NMR_DEFAULTS.num_scans,
+                    )
 
                 elif type(exp) is dict:
                     try:
                         experiment = AcquisitionParameters(
-                            parameters=exp["parameters"]
+                            parameters=exp["parameters"],
+                            num_scans=NMR_DEFAULTS.num_scans,
                         )
 
                     except KeyError:
                         logging.error(
                             f"Unknown parameter set for sample {position} "
-                            f"- using defaults."
+                            f"- using {NMR_DEFAULTS.parameters}."
                         )
-                        experiment = AcquisitionParameters()
+                        experiment = AcquisitionParameters(
+                            parameters=NMR_DEFAULTS.parameters,
+                            num_scans=NMR_DEFAULTS.num_scans,
+                        )
 
                     if "num_scans" in exp:
                         experiment.num_scans = exp["num_scans"]
@@ -212,7 +215,7 @@ class SampleBatch:
 
 
 def acquire_batch(
-    samples: SampleBatch,
+    samples_path: Path,
     name: str,
     data_path: Path,
     dry: bool = False,
@@ -237,6 +240,8 @@ def acquire_batch(
         NMR_SETUP,
         RACKS,
     )
+
+    samples = SampleBatch.from_file(samples_path)
 
     for sample in samples:
         # Re-shim if needed
