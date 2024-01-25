@@ -489,18 +489,40 @@ class Fourier80:
     def open_experiment(
         self,
         path: PathLike,
+        expno: int = 10,
+        procno: int = 1,
     ) -> NMRExperiment:
-        """
-        Open an existing NMR experiment.
+        """Open an existing NMR experiment.
+
+        The path provided can be either to the processed data file (typically:
+        `pdata/1`) or to the actual main dataset folder (i.e., the parent to
+        the EXPNO folder). For example, for a dataset:
+
+        `TEST_NMR/10/pdata/1`
+
+        one can pass either that entire path as the main argument, or just
+        `TEST_NMR`. Furthermore, if TEST_NMR contains also EXPNO 20, one could
+        call using: path = `TEST_NMR/10/pdata/1`, expno = 20.
 
         Parameters
         ----------
         path : PathLike
             A path to the NMR experiment.
+        expno, optional
+            Experiment number, by default 10.
+        procno, optional
+            Processing number, by default 1.
 
+        Returns
+        -------
+            NMRExperiment, including loading in the TopSpin window.
         """
         path = Path(path)
-        return NMRExperiment(self.top, path)
+        if path.parent == "pdata":
+            pdata_path = path.parents[2] / f"{expno}/pdata/{procno}"
+        else:
+            pdata_path = path / f"{expno}/pdata/{procno}"
+        return NMRExperiment(self.top, pdata_path)
 
     def change_sample(
         self,
