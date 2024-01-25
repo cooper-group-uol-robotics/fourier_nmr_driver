@@ -270,11 +270,10 @@ def acquire_batch(
         if not dry:
             time.sleep(NMR_SETUP.wait_time)
 
-        name = f"{name}-{sample.position:02d}"
         for n, experiment in enumerate(sample.experiments):
             title = "\n".join(
                 [
-                    f"{name}",
+                    f"{name}-{sample.position:02d}",
                     f"{sample.sample_info}",
                     experiment.parameters,
                 ]
