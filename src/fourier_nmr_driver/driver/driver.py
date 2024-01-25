@@ -518,7 +518,7 @@ class Fourier80:
             NMRExperiment, including loading in the TopSpin window.
         """
         path = Path(path)
-        if path.parent == "pdata":
+        if path.parent.name == "pdata":
             pdata_path = path.parents[2] / f"{expno}/pdata/{procno}"
         else:
             pdata_path = path / f"{expno}/pdata/{procno}"
