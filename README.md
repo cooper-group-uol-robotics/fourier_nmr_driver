@@ -1,5 +1,7 @@
 # Driver for Bruker Fourier80 NMR in A.I.C. Group
 
+[![DOI](https://zenodo.org/badge/739312998.svg)](https://zenodo.org/doi/10.5281/zenodo.11174257)
+
 ## Requirements and installation
 
 Requires the official Bruker TopSpin Python API to be installed in the system.
