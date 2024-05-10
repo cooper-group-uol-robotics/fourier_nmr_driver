@@ -13,7 +13,7 @@ conda create -n fourier-nmr-driver python>=3.10
 conda activate fourier-nmr-driver
 ```
 
-and then install the TopSpin API directly from the wheels provided by Bruker:
+and then install the TopSpin API directly from the wheels provided by Bruker (note that different versions might be supplied with different TopSpin installations):
 
 ```
 cd <TopSpin-installation-folder>/python/examples
@@ -44,7 +44,7 @@ ticking the box "Start every time TopSpin is started".
 
 The package can also be executes as a Python module via:
 ```
-python -m fourier_nmr_driver [SAMPLEs.TOML]
+python -m fourier_nmr_driver [SAMPLES.TOML]
 ```
 or directly as a script:
 ```
