@@ -1,7 +1,7 @@
 {
     "1": {
         "sample_info": "Sample 1",
-        "solvent": "CD3Cl",
+        "solvent": "CDCl3",
         "nmr_experiments": [
             "MULTISUPPDC_f"
         ]
@@ -13,7 +13,10 @@
             "PROTON_f",
             {
                 "parameters": "MULTISUPPDC_f",
-                "num_scans": 64
+                "num_scans": 64,
+                "acqupars": {
+                    "ds": 4
+                }
             }
         ]
     },
@@ -22,7 +25,11 @@
         "solvent": "CH3CN",
         "nmr_experiments": [
             {
-                "parameters": "PROTON_f"
+                "parameters": "PROTON_f",
+                "acqupars": {
+                    "d1": 1,
+                    "sw": 10
+                }
             },
             {
                 "parameters": "MULTISUPPDC_f",

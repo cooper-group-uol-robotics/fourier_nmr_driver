@@ -9,12 +9,9 @@ import json
 import logging
 import time
 import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import (
-    Iterable,
-    Optional,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -52,9 +49,10 @@ class AcquisitionParameters:
 
     parameters: str
     num_scans: int
-    l30: Optional[int] = None
-    pp_threshold: Optional[float] = None
-    field_presat: Optional[float] = None
+    l30: int | None = None
+    pp_threshold: float | None = None
+    field_presat: float | None = None
+    acqupars: dict[str, float] | None = None
 
 
 @dataclass
@@ -82,7 +80,7 @@ class SampleBatch:
         """
         self.samples = list(samples)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         return self.samples[index]
 
     def __len__(self):
@@ -95,7 +93,7 @@ class SampleBatch:
     def from_file(
         cls,
         samples_path: Path,
-    ):
+    ) -> "SampleBatch":
         """
         Initialise SampleBatch from a TOML or JSON file.
 
@@ -108,12 +106,12 @@ class SampleBatch:
         samples_path = Path(samples_path)
         match samples_path.suffix:
             case ".toml":
-                with open(samples_path, "rb") as f:
+                with samples_path.open("rb") as f:
                     samples = tomllib.load(f)
                     logger.info(f"Loaded {len(samples)} sample request(s).")
 
             case ".json":
-                with open(samples_path, "r") as f:
+                with samples_path.open("r") as f:
                     samples = json.load(f)
                     logger.info(f"Loaded {len(samples)} sample request(s).")
 
@@ -129,7 +127,7 @@ class SampleBatch:
     def from_dict(
         cls,
         samples_dict: dict,
-    ):
+    ) -> "SampleBatch":
         """
         Generate SampleBatch from a dictionary.
 
@@ -171,22 +169,20 @@ class SampleBatch:
                     if "num_scans" in exp:
                         experiment.num_scans = exp["num_scans"]
 
-                    if exp["parameters"] == "MULTISUPPDC_f":
-                        if "pp_threshold" in exp:
-                            experiment.pp_threshold = exp["pp_threshold"]
-                        else:
-                            experiment.pp_threshold = NMR_DEFAULTS.pp_threshold
+                    if "acqupars" in exp:
+                        experiment.acqupars = exp["acqupars"]
 
-                        if "field_presat" in exp:
-                            experiment.field_presat = exp["field_presat"]
-                        else:
-                            experiment.field_presat = NMR_DEFAULTS.field_presat
+                    if exp["parameters"] == "MULTISUPPDC_f":
+                        experiment.pp_threshold = exp.get(
+                            "pp_threshold", NMR_DEFAULTS.pp_threshold
+                        )
+
+                        experiment.field_presat = exp.get(
+                            "field_presat", NMR_DEFAULTS.field_presat
+                        )
 
                     elif exp["parameters"] == "K_WETDC":
-                        if "l30" in exp:
-                            experiment.l30 = exp["l30"]
-                        else:
-                            experiment.l30 = NMR_DEFAULTS.l30
+                        experiment.l30 = exp.get("l30", NMR_DEFAULTS.l30)
 
                 else:
                     logger.error("Wrong experiment format in the batch file.")
@@ -201,12 +197,10 @@ class SampleBatch:
             sample = NMRSample(
                 position=int(position),
                 experiments=experiments,
-                solvent=info["solvent"]
-                if "solvent" in info
-                else NMR_DEFAULTS.solvent,
-                sample_info=info["sample_info"]
-                if "sample_info" in info
-                else NMR_DEFAULTS.sample_info,
+                solvent=(info.get("solvent", NMR_DEFAULTS.solvent)),
+                sample_info=(
+                    info.get("sample_info", NMR_DEFAULTS.sample_info)
+                ),
             )
 
             samples.append(sample)
@@ -245,10 +239,11 @@ def acquire_batch(
 
     for sample in samples:
         # Re-shim if needed
-        if not dry:
-            if time.time() - FOURIER.last_shim > NMR_SETUP.reshim_time:
-                logger.info("Too much time since last shim - reshimming.")
-                reshim()
+        if not dry and (
+            time.time() - FOURIER.last_shim > NMR_SETUP.reshim_time
+        ):
+            logger.info("Too much time since last shim - reshimming.")
+            reshim()
 
         if 1 <= sample.position <= len(RACKS):
             pal_position = RACKS[sample.position - 1]
@@ -279,43 +274,52 @@ def acquire_batch(
                 ]
             )
 
+            exp = FOURIER.new_experiment(
+                path=data_path,
+                exp_name=f"{name}-{sample.position:02d}",
+                exp_num=10 * (n + 1),
+                title=title,
+                solvent=sample.solvent,
+                parameters=experiment.parameters,
+                getprosol=bool(not dry),
+                overwrite=True,
+            )
             if not dry:
-                exp = FOURIER.new_experiment(
-                    path=data_path,
-                    exp_name=f"{name}-{sample.position:02d}",
-                    exp_num=10 * (n + 1),
-                    title=title,
-                    solvent=sample.solvent,
-                    parameters=experiment.parameters,
-                    getprosol=True,
-                    overwrite=True,
-                )
                 FOURIER.lock(exp)
                 logger.info("Locking Fourier80 has finished.")
-                exp.number_scans = experiment.num_scans
-                logger.info(
-                    f"Number of scans for experiment {experiment.parameters} "
-                    f"(expno {10 * (n + 1)}) on sample "
-                    f"{name}-{sample.position:02d} is {experiment.num_scans}."
-                )
 
-                match experiment.parameters:
-                    case "K_WETDC":
-                        exp.nmr_data.launch(f"L30 {experiment.l30}")
-                        logger.info(f"K_WETDC: L30 set to {experiment.l30}.")
+            exp.number_scans = experiment.num_scans
+            logger.info(
+                f"Number of scans for experiment {experiment.parameters} "
+                f"(expno {10 * (n + 1)}) on sample "
+                f"{name}-{sample.position:02d} is {experiment.num_scans}."
+            )
+
+            if experiment.acqupars is not None:
+                for acqu, value in experiment.acqupars.items():
+                    exp.nmr_data.launch(f"{acqu} {value}")
+                    logger.info(f"{acqu.upper()} set to {value}.")
+
+            match experiment.parameters:
+                case "K_WETDC":
+                    exp.nmr_data.launch(f"L30 {experiment.l30}")
+                    logger.info(f"K_WETDC: L30 set to {experiment.l30}.")
+                    if not dry:
                         exp.nmr_data.launch("xaua")
-                    case "MULTISUPPDC_f":
-                        logger.info(
-                            "MULTISUPPDC_f: presaturation of "
-                            f"{experiment.field_presat} and peak picking "
-                            f"threshold {experiment.pp_threshold}."
-                        )
+                case "MULTISUPPDC_f":
+                    logger.info(
+                        "MULTISUPPDC_f: presaturation of "
+                        f"{experiment.field_presat} and peak picking "
+                        f"threshold {experiment.pp_threshold}."
+                    )
+                    if not dry:
                         exp.nmr_data.launch(
                             "multisupp13c --c13_decouple bb "
                             f"--fieldpresat {experiment.field_presat} "
                             f"--threshold_pp {experiment.pp_threshold}"
                         )
-                    case _:
+                case _:
+                    if not dry:
                         exp.nmr_data.launch("xaua")
             logger.info(f"Experiment {experiment.parameters} completed.")
 
