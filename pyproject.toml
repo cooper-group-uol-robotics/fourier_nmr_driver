@@ -58,7 +58,7 @@ ignore-property-decorators = true
 ignore-magic = true
 
 [[tool.mypy.overrides]]
-ignore_missing_imports = true
+disable_error_code = "import-untyped"
 
 [tool.ruff]
 line-length = 79
@@ -79,6 +79,7 @@ lint.select = [
 lint.ignore = [
     "ANN101",
     "ANN102",
+    "ANN204",
     "D105",
 ]
 

@@ -1,5 +1,5 @@
 """
-Driver for a Bruker Fourier 80 benchtop NMR.
+Driver for a Bruker Fourier 80 bench-top NMR.
 
 Requires the official TopSpin API (TopSpin >= 4.3).
 
@@ -14,10 +14,6 @@ from shutil import (
 from time import (
     sleep,
     time,
-)
-from typing import (
-    Optional,
-    Union,
 )
 from warnings import warn
 
@@ -38,7 +34,7 @@ class NMRExperiment:
         top: Topspin,
         path: PathLike,
     ):
-        """Initalise NMRExperiment."""
+        """Initialise NMRExperiment."""
         self.top = top
         self.data_provider = self.top.getDataProvider()
         self.path = Path(path).resolve()
@@ -46,7 +42,11 @@ class NMRExperiment:
         self.display = self.top.getDisplay()
         self.display.show(dataset=self.nmr_data, newWindow=False)
 
-    def _get_parameter(self, parameter, status=False):
+    def _get_parameter(
+        self,
+        parameter: str,
+        status: bool = False,
+    ) -> str:
         """Get acquisition or processing parameter value."""
         if status:
             return self.nmr_data.getPar(f"status {parameter.upper()}")
@@ -54,7 +54,7 @@ class NMRExperiment:
             return self.nmr_data.getPar(f"{parameter.upper()}")
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Experiment name."""
         return self.path.parents[2].name
 
@@ -183,6 +183,7 @@ class NMRExperiment:
                     "list. It might have caused a TopSpin error if not "
                     "present in the TopSpin's user parameters list."
                 ),
+                stacklevel=2,
                 category=TopSpinWarning,
             )
         self.nmr_data.launch("rpar " + value + " all")
@@ -213,11 +214,12 @@ class NMRExperiment:
                     "It might have caused a TopSpin error if not present "
                     "in the edlock table."
                 ),
+                stacklevel=2,
                 category=TopSpinWarning,
             )
         self.nmr_data.launch(f"solvent {value}")
 
-    def process(self):
+    def process(self) -> None:
         """
         Process the NMR spectrum in a very basic way.
 
@@ -253,8 +255,8 @@ class Fourier80:
 
     def __init__(
         self,
-        address: Optional[str] = None,
-        port: Optional[Union[str, int]] = None,
+        address: str | None = None,
+        port: str | int | None = None,
     ):
         """
         Initialise the spectrometer.
@@ -279,8 +281,8 @@ class Fourier80:
         try:
             self.top.getVersion()
 
-        except ApiException:
-            raise ConnectionError("Cannot connect to TopSpin.")
+        except ApiException as exc:
+            raise ConnectionError("Cannot connect to TopSpin.") from exc
 
         self.display = self.top.getDisplay()
         self.display.closeAllWindows()
@@ -296,7 +298,7 @@ class Fourier80:
         self,
         path: PathLike,
         exp_name: str,
-        title: Optional[str] = None,
+        title: str | None = None,
         exp_num: int = 10,
         proc_num: int = 1,
         parameters: str = "PROTON",
@@ -373,6 +375,7 @@ class Fourier80:
                     "It might have caused a TopSpin error if not present "
                     "in the edlock table."
                 ),
+                stacklevel=2,
                 category=TopSpinWarning,
             )
         nmr_data.launch(f"solvent {solvent}", wait=True)
@@ -390,11 +393,11 @@ class Fourier80:
         nmr_experiment: NMRExperiment,
         path: PathLike,
         exp_name: str,
-        title: Optional[str] = None,
-        exp_num: Optional[int] = None,
+        title: str | None = None,
+        exp_num: int | None = None,
         proc_num: int = 1,
-        parameters: Optional[str] = None,
-        solvent: Optional[str] = None,
+        parameters: str | None = None,
+        solvent: str | None = None,
         getprosol: bool = False,
         overwrite: bool = False,
     ) -> NMRExperiment:
@@ -598,7 +601,7 @@ class Fourier80:
 
     def start_shimming(
         self,
-        quick=True,
+        quick: bool = True,
     ) -> None:
         """
         Start the shimming procedure.
@@ -636,7 +639,7 @@ class Fourier80:
 
     def stop_shimming(
         self,
-        save_shims=True,
+        save_shims: bool = True,
     ) -> None:
         """
         Stop the shimming procedure.
@@ -668,7 +671,7 @@ class Fourier80:
         except ConnectionError:
             return False
 
-    def halt(self):
+    def halt(self) -> None:
         """
         Halt executing current program/action immediately.
 
@@ -679,7 +682,7 @@ class Fourier80:
         self.top.executeCommand("halt", wait=True)
         self._busy = False
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stop executing current program/action immediately.
 
@@ -694,7 +697,7 @@ class Fourier80:
 class TopSpinWarning(Warning):
     """Custom warnings pertaining to potential TopSpin errors."""
 
-    def __init__(self, message):
+    def __init__(self, message: str):
         self.message = message
 
     def __str__(self):

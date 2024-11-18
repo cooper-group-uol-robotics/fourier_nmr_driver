@@ -1,3 +1,5 @@
+"""Main entry point for the Fourier NMR driver."""
+
 import argparse
 import logging
 import tomllib
@@ -68,7 +70,7 @@ logger.info(f"Code running in {Path.cwd()}.")
 
 if args.settings is not None:
     settings_path = (Path.cwd() / args.settings).resolve()
-    with open(settings_path, "rb") as f:
+    with settings_path.open("rb") as f:
         settings = tomllib.load(f)
     NMR_SETUP = NMRSetup(**settings["nmr"])
     NMR_DEFAULTS = NMRDefaults(**settings["defaults"])
@@ -109,9 +111,8 @@ FOURIER = Fourier80()
 logger.info(f"Fourier80 REST interface connected at {FOURIER.url}.")
 
 
-def main():
+def main() -> None:
     """Execute the acquisition code."""
-
     if not args.dry:
         FOURIER.stop_shimming()
         logger.info("Quickshim procedure completed.")

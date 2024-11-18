@@ -1,3 +1,5 @@
+"""Wrapper for TopSpin Python API."""
+
 from fourier_nmr_driver.constants.constants import (
     PARAMS,
     SOLVENTS,
@@ -8,7 +10,7 @@ from fourier_nmr_driver.driver.driver import (
     TopSpinWarning,
 )
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 __all__ = (
     "NMRExperiment",
     "Fourier80",
