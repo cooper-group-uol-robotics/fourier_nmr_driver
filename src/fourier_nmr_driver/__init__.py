@@ -10,7 +10,7 @@ from fourier_nmr_driver.driver.driver import (
     TopSpinWarning,
 )
 
-__version__ = "0.6.0"
+__version__ = "1.1.0"
 __all__ = (
     "NMRExperiment",
     "Fourier80",

@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fourier_nmr_driver"
 description = "Driver for Bruker Fourier80 with PAL instrument control."
-version = "0.5.0"
+version = "1.1.0"
 requires-python = ">=3.11"
 authors = [
     { name = "Filip T. Szczypiński", email = "fiszczyp@gmail.com" },
