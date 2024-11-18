@@ -11,3 +11,5 @@ build/
 
 wheels/
 venv/
+
+cache.json
