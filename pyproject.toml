@@ -53,20 +53,29 @@ exclude = [
     "setup.py",
 ]
 verbose = 2
-ignore-init-method = true
-ignore-init-module = true
 ignore-setters = true
 ignore-property-decorators = true
 ignore-magic = true
 
 [[tool.mypy.overrides]]
-module = [
-    'bruker.api.topspin',
-    'bruker.model.nmr_model',
-]
 ignore_missing_imports = true
 
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+lint.select = [
+    "E",   # pycodestyle
+    "F",   # Pyflakes
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "TD",  # flake8-todos
+    "PTH", # flake8-use-pathlib
+    "ANN", # flake8-annotations
+    "I",   # isort
+    "N",   # PEP8 naming
+    "D",   # pydocstyle
+]
 
-[tool.isort]
-profile         = "black"
-force_grid_wrap = 2
+    [tool.ruff.lint.pydocstyle]
+    convention = "numpy"
